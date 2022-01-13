@@ -10,11 +10,15 @@ let bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
 const categories = require('./routes/categories');
-const menuItems = require('./routes/menu-items');
-
-
 app.use('/api/categories', categories);
-app.use('/api/menu-items', menuItems);
+
+const menuItems = require('./routes/menu-items');
+app.use('/api/menuItems', menuItems);
+
+const checkAuth = require('./routes/checkAuth');
+
+const login = require('./routes/login');
+app.use('/login', login);
 
 app.get('/*', (req, res) => res.sendFile(path.join(__dirname)));
 

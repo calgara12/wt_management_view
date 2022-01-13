@@ -14,8 +14,8 @@ router.get('/', async (req,res) => {                //view all categories
 router.get('/:categoryId', async (req,res) => {     //get category by ID
     let result = [];
     try {
-        const queryGetCategory = {text: 'SELECT * FROM categories WHERE id = $1', values: [req.params.categoryId]};
-        result = await pool.query(queryGetCategory);
+        const queryGetCategoryById = {text: 'SELECT * FROM categories WHERE id = $1', values: [req.params.categoryId]};
+        result = await pool.query(queryGetCategoryById);
         res.status(200).json(result.rows);
     } catch (error) {
         res.status(500).send("Error");
@@ -24,7 +24,23 @@ router.get('/:categoryId', async (req,res) => {     //get category by ID
 
 router.post('/create', async (req,res) => {         //create category
     let result = [];
+    if(req.body === null) {
+        res.status(400).send("Request Body is empty");
+        return;
+    }
+
     try {
+        let newCategory = req.body;
+        if(newCategory.id) {
+            let checkCategoryId = await pool.query({
+                text: 'SELECT * FROM categories WHERE id = $1',
+                values: [newCategory.id]
+            });
+            if(checkCategoryId.rows.length > 0) {
+                res.status(400).send("Category with ID =" + newCategory.id + " already exists");
+                return;
+            }
+        }
         const queryCreateCategory = {
             text: 'INSERT INTO categories(id, name, type_id) VALUES($1, $2, $3)',
             values: [req.body.id, req.body.name, req.body.type_id]
@@ -39,14 +55,31 @@ router.post('/create', async (req,res) => {         //create category
 router.put('/:categoryId', async (req,res) => {    //update category
     let result = [];
     try {
+        const queryGetCategoryById = {
+            text: 'SELECT * FROM categories WHERE id = $1',
+            values: [req.params.categoryId]
+        };
+        result = pool.query(queryGetCategoryById);
+
+        if(result.rows.length < 1) {
+            res.status(404).send("Category with ID = " + req.params.categoryId + " not found");
+            return;
+        }
+        let currentCategory = result.rows;
+        let id = req.body.id != null ? req.body.id : currentCategory[0].id;
+        let type_id = req.body.type_id != null ? req.body.type_id : currentCategory[0].type_id;
+        let name = req.body.name != null ? req.body.name : currentCategory[0].name;
+
         const queryUpdate = {
             text: 'UPDATE categories SET name = $1, type_id = $2 WHERE id = $3', 
-            values: [req.body.name,
-                    req.body.type_id,
-                    req.params.categoryId]
+            values: [name, type_id, req.params.categoryId]
         };
         result = await pool.query(queryUpdate);
-        res.status(200).send("Successfully updated");
+        if(result.rowCount < 1) {
+            res.status(400).send("No changes applied")
+        } else {
+            res.status(200).send("Successfully updated");
+        }
     } catch (error) {
         res.status(500).send("Error");
     }
@@ -60,7 +93,12 @@ router.delete('/:categoryId', async (req, res) => {         //delete category
             values: [req.params.categoryId]
         };
         result = await pool.query(queryDelete);
-        res.status(200).send("Successfully deleted");
+
+        if(result.rowCount < 1) {
+            res.status(400).send("No entry deleted");
+        } else {
+            res.status(200).send("Successfully deleted entry");
+        }
     } catch (error) {
         res.status(500).send("Error");
     }
