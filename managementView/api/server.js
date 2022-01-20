@@ -4,6 +4,8 @@ const http = require('http');
 const path = require('path');
 const app = express();
 const port = process.env.PORT || 3001;
+let bodyParser = require('body-parser');
+app.use(bodyParser.json());
 app.use(express.static(__dirname + '/dist/managementView'));
 //routing
 const tables = require('./routes/tables')
@@ -13,8 +15,7 @@ app.use('/api/users', users)
 
 
 
-let bodyParser = require('body-parser');
-app.use(bodyParser.json());
+
 
 const categories = require('./routes/categories');
 app.use('/api/categories', categories);

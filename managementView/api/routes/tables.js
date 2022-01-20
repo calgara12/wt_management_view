@@ -1,5 +1,6 @@
 const express = require('express'), router = express.Router()
 const pool = require('../pool.js');  // the database pool
+const QRCode = require('qrcode')
 
 
 router.get('/', async (req,res) => {
@@ -28,9 +29,27 @@ router.get('/:tableId', async (req,res) => {
     res.status(200).json(result.rows);
 })
 
+router.get('/:tableId/qrcode', async (req,res) => {
+    let qrcode = "";
+    try{
+        const qGetTable = {
+            text: 'SELECT * FROM tables WHERE id = $1',
+            values: [req.params.tableId]
+        }
+        result = await pool.query(qGetTable);
+
+        qrcode = await QRCode.toDataURL(`Seats: ${result.rows[0].seats}, Location: ${result.rows[0].location}`)
+    }
+    catch(err){
+        res.status(500).send("This should not have happened!");
+    }
+    res.status(200).json(qrcode);
+})
+
 router.post('/create', async (req,res) => {
     let result = [];
     try{
+
         const qCreate = {
             text: 'INSERT INTO tables(seats, location, qr_code) VALUES($1, $2, $3)',
             values: [req.body.seats,
@@ -79,3 +98,12 @@ router.delete('/:tableId', async (req,res) => {
 })
  
 module.exports = router;
+
+async function generateQRCode(seats, location){
+
+    QRCode.toDataURL(`Seats: ${seats}, Location: ${location}`, function (err, url) {
+        
+        console.log(url)
+        return url;
+    })
+}
