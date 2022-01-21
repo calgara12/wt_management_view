@@ -1,7 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Table } from './table'
 import { Observable } from 'rxjs';
+
 
 @Component({
   selector: 'app-tables',
@@ -16,10 +17,29 @@ export class TablesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.http.get(this.api + '/tables')
-    .subscribe(res => {
-      console.log(res)
+    this.http.get<Table[]>(this.api + '/tables')
+    .subscribe(Response => {
+ 
+      // If response comes hideloader() function is called
+      // to hide that loader
+
+      this.tables = Response
+    });
+  }
+
+  onSubmit(table:Table){
+
+    let obj = {
+      test: "test",
+      asdf: "asdf"
+    }
+    console.log(this.api+'/tables/create')
+    const req = this.http.post(this.api+'/tables/create',JSON.stringify(table),{headers: {"Content-Type": "application/json"}}).subscribe((result)=> {
+      console.log(result);
     })
+    location.reload();
+
+    console.log(table)
   }
 
 }

@@ -7,6 +7,8 @@ import { TablesModule } from './tables.module';
 import { LoginComponent } from './login/login.component';
 import { LoginModule } from './login.module';
 import { HttpClientModule } from '@angular/common/http'
+import { FormsModule }   from '@angular/forms';
+
 
 @NgModule({
   declarations: [
@@ -18,7 +20,8 @@ import { HttpClientModule } from '@angular/common/http'
     BrowserModule,
     TablesModule,
     LoginModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

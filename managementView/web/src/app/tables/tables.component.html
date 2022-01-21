@@ -1,26 +1,30 @@
 <table class="uk-table uk-table-striped">
     <thead>
         <tr>
-            <th>Table Heading</th>
-            <th>Table Heading</th>
-            <th>Table Heading</th>
+            <th>Id</th>
+            <th>Location</th>
+            <th>Seats</th>
+            <th>QR Code</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>Table Data</td>
-            <td>Table Data</td>
-            <td>Table Data</td>
-        </tr>
-        <tr>
-            <td>Table Data</td>
-            <td>Table Data</td>
-            <td>Table Data</td>
-        </tr>
-        <tr>
-            <td>Table Data</td>
-            <td>Table Data</td>
-            <td>Table Data</td>
+        <tr *ngFor="let table of tables">
+            <td>{{table.id}}</td>
+            <td>{{table.location}}</td>
+            <td>{{table.seats}}</td>
+            <td><a href="" uk-icon="icon: image"></a></td>
+            <td>
+                <a href="" uk-icon="icon: pencil"></a>
+                <a href="" uk-icon="icon: trash"></a>
+            </td>
         </tr>
     </tbody>
 </table>
+<form #tablePost="ngForm" (ngSubmit)="onSubmit(tablePost.value)">
+    <span class="uk-label">location:</span>
+    <input class="uk-input" name="location" ngModel placeholder="outside">
+    <span class="uk-label">Number of Seats:</span>
+    <input class="uk-input" type="number" name="seats" ngModel placeholder="20">
+    <input class="uk-input" type="submit">
+</form>
