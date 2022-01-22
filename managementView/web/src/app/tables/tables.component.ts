@@ -12,8 +12,15 @@ import { Observable } from 'rxjs';
 export class TablesComponent implements OnInit {
 
   readonly api = 'http://localhost:3001/api'
-  tables: Table[] = []
+  tables: Table[]
+  id: number
+  location: string 
+  seats: number
   constructor(private http: HttpClient) { 
+    this.tables = []
+    this.id = -1
+    this.location = ""
+    this.seats = 0
   }
 
   ngOnInit(): void {
@@ -27,19 +34,61 @@ export class TablesComponent implements OnInit {
     });
   }
 
+
+  onEdit(selectedTable: Table) {
+    this.id = selectedTable.id
+    this.location = selectedTable.location
+    this.seats = selectedTable.seats
+  }
+
   onSubmit(table:Table){
 
-    let obj = {
-      test: "test",
-      asdf: "asdf"
+    if(table.id != -1){
+      this.http.put(this.api+'/tables/' + table.id,JSON.stringify(table),{headers: {"Content-Type": "application/json"}}).subscribe((result)=> {
+        console.log(result);
+      })
     }
-    console.log(this.api+'/tables/create')
-    const req = this.http.post(this.api+'/tables/create',JSON.stringify(table),{headers: {"Content-Type": "application/json"}}).subscribe((result)=> {
+    else{
+      this.http.post(this.api+'/tables/create',JSON.stringify(table),{headers: {"Content-Type": "application/json"}}).subscribe((result)=> {
+        console.log(result);
+      })
+    }
+
+    location.reload();
+  }
+
+  onDelete(table:Table){
+
+    this.http.delete(this.api+'/tables/' + table.id).subscribe((result)=> {
       console.log(result);
     })
-    location.reload();
+    
 
-    console.log(table)
+    location.reload();
+  }
+  onPrintQRCode(table:Table){
+
+    this.http.get(this.api+'/tables/' + table.id + '/qrcode').subscribe((result)=> {
+      console.log(result);
+      let printWindow = window.open('qrcode', 'QRCode', 'location=1,status=1,scrollbars=1,width=800,height=600');
+
+      printWindow!.document.write("<div style='width:100%;'>");
+      printWindow!.document.write("<img id='img' src='" + result.toString() + "'/>");
+      printWindow!.document.write("</div>");
+      printWindow!.document.close();
+      setTimeout(function() {
+        printWindow!.focus();
+        printWindow!.print();
+        printWindow!.close();
+    }, 250);
+
+
+
+
+
+    })
+    
+
   }
 
 }
