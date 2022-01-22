@@ -39,7 +39,7 @@ router.get('/:tableId/qrcode', async (req,res) => {
         }
         result = await pool.query(qGetTable);
 
-        qrcode = await QRCode.toDataURL(`Seats: ${result.rows[0].seats}, Location: ${result.rows[0].location}`)
+        qrcode = await QRCode.toDataURL(`Table Number: ${result.rows[0].id} Seats: ${result.rows[0].seats}, Location: ${result.rows[0].location}`)
     }
     catch(err){
         res.status(500).send("This should not have happened!");
