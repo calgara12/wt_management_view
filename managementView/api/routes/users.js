@@ -13,6 +13,17 @@ router.get('/', async (req,res) => {
     res.status(200).json(result.rows);
 })
 
+router.get('/roles', async (req,res) => {
+    let result = [];
+    try{
+        result = await pool.query('SELECT * FROM roles');
+    }
+    catch(err){
+        res.status(500).send("This should not have happened!");
+    }
+    res.status(200).json(result.rows);
+})
+
 router.get('/:userId', async (req,res) => {
     let result = [];
     try{
