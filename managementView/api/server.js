@@ -7,26 +7,24 @@ const port = process.env.PORT || 3001;
 let bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(express.static(__dirname + '/dist/managementView'));
+
 //routing
+const checkAuth = require('./routes/checkAuth');
+
+const login = require('./routes/login');
+app.use('/api/login', login);
+
 const tables = require('./routes/tables')
 const users = require('./routes/users')
-app.use('/api/tables', tables)
-app.use('/api/users', users)
-
-
-
+app.use('/api/tables', checkAuth, tables)
+app.use('/api/users', checkAuth, users)
 
 
 const categories = require('./routes/categories');
-app.use('/api/categories', categories);
+app.use('/api/categories', checkAuth, categories);
 
 const menuItems = require('./routes/menu-items');
-app.use('/api/menuItems', menuItems);
-
-//const checkAuth = require('./routes/checkAuth');
-
-//const login = require('./routes/login');
-//app.use('/login', login);
+app.use('/api/menuItems', checkAuth, menuItems);
 
 app.get('/*', (req, res) => res.sendFile(path.join(__dirname)));
 
