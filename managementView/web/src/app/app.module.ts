@@ -7,18 +7,27 @@ import { TablesModule } from './tables.module';
 import { LoginComponent } from './login/login.component';
 import { LoginModule } from './login.module';
 import { HttpClientModule } from '@angular/common/http'
+import { FormsModule }   from '@angular/forms';
+import { UsersModule } from './users.module';
+import { UsersComponent } from './users/users.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     TablesComponent,
+    UsersComponent,
     LoginComponent,
+    UsersComponent,
   ],
   imports: [
     BrowserModule,
     TablesModule,
+    UsersModule,
     LoginModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule,
+    UsersModule
   ],
   providers: [],
   bootstrap: [AppComponent]

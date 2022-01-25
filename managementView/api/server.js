@@ -2,11 +2,24 @@ let cfg = require('./config.json');
 const express = require('express');
 const http = require('http');
 const path = require('path');
+const cors =  require('cors')
+
+
 const app = express();
 const port = process.env.PORT || 3001;
 let bodyParser = require('body-parser');
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded());
 app.use(express.static(__dirname + '/dist/managementView'));
+app.use(cors({
+    origin: '*'
+}));
+
+//routing
+const tables = require('./routes/tables')
+const users = require('./routes/users')
+app.use('/api/tables', tables)
+app.use('/api/users', users)
 
 //routing
 const checkAuth = require('./routes/checkAuth');
