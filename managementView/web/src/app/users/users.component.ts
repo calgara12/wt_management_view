@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { User } from './user'
 import { Role } from './role'
 import { Observable } from 'rxjs';
+import {CookieService} from 'ngx-cookie-service'
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -21,7 +23,7 @@ export class UsersComponent implements OnInit {
   role: string
   username: string 
   password: string
-  constructor(private http: HttpClient) { 
+  constructor(private http: HttpClient, private cookie: CookieService, private router: Router) { 
     this.users = []
     this.roles = []
     this.id = -1
@@ -33,20 +35,28 @@ export class UsersComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.http.get<User[]>(this.api + '/users')
+    this.http.get<User[]>(this.api + '/users', {headers: {"authorization": this.cookie.get("token")}})
     .subscribe(Response => {
       this.users = Response
 
-      this.http.get<Role[]>(this.api + '/users/roles')
+      this.http.get<Role[]>(this.api + '/users/roles',{headers: {"authorization": this.cookie.get("token")}})
       .subscribe(Response => {
       this.roles = Response
       
         for (let user of this.users) {
           user.role = this.getRoleNameByID(user.role_id);
         }
-
+      },error => {
+        if(error.status === 401){
+          this.router.navigateByUrl('/')
+        }
+        console.log(error)
       });
-
+    }, error => {
+      if(error.status === 401){
+        this.router.navigateByUrl('/')
+      }
+      console.log(error)
     });
   }
 
@@ -71,14 +81,24 @@ export class UsersComponent implements OnInit {
 
     let dto = {role_id: user.roleSelect.id, username: user.username, password: user.password}
     if(user.id != -1){
-      this.http.put(this.api+'/users/' + user.id,JSON.stringify(dto),{headers: {"Content-Type": "application/json"}}).subscribe((result)=> {
+      this.http.put(this.api+'/users/' + user.id,JSON.stringify(dto),{headers: {"Content-Type": "application/json", "authorization": this.cookie.get("token")}}).subscribe((result)=> {
         console.log(result);
-      })
+      }, error => {
+        if(error.status === 401){
+          this.router.navigateByUrl('/')
+        }
+        console.log(error)
+      });
     }
     else{
-      this.http.post(this.api+'/users/create',JSON.stringify(dto),{headers: {"Content-Type": "application/json"}}).subscribe((result)=> {
+      this.http.post(this.api+'/users/create',JSON.stringify(dto),{headers: {"Content-Type": "application/json", "authorization": this.cookie.get("token")}}).subscribe((result)=> {
         console.log(result);
-      })
+      }, error => {
+        if(error.status === 401){
+          this.router.navigateByUrl('/')
+        }
+        console.log(error)
+      });
     }
 
     location.reload();
@@ -86,11 +106,17 @@ export class UsersComponent implements OnInit {
 
   onDelete(user:User){
 
-    this.http.delete(this.api+'/users/' + user.id).subscribe((result)=> {
+    this.http.delete(this.api+'/users/' + user.id,{headers: {"authorization": this.cookie.get("token")}}).subscribe((result)=> {
       console.log(result);
-    })
+      location.reload();
+
+    }, error => {
+      if(error.status === 401){
+        this.router.navigateByUrl('/')
+      }
+      console.log(error)
+    });
     
 
-    location.reload();
   }
 }

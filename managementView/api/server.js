@@ -16,12 +16,6 @@ app.use(cors({
 }));
 
 //routing
-const tables = require('./routes/tables')
-const users = require('./routes/users')
-app.use('/api/tables', tables)
-app.use('/api/users', users)
-
-//routing
 const checkAuth = require('./routes/checkAuth');
 
 const login = require('./routes/login');

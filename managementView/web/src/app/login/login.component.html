@@ -4,5 +4,7 @@
     <span class="uk-label">Password:</span>
     <input class="uk-input" type="password" name="password" [(ngModel)]="password">
 
-    <input class="uk-input" type="submit">
+    <input class="uk-input" type="submit" value="Login">
+    <span class="uk-label-warning" [hidden]="!invalid_credentials">Invalid Credentials</span>
+
 </form>

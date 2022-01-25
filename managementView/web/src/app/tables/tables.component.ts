@@ -2,6 +2,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Table } from './table'
 import { Observable } from 'rxjs';
+import {CookieService} from 'ngx-cookie-service'
+import { Router } from '@angular/router';
+
+
 
 
 @Component({
@@ -16,7 +20,7 @@ export class TablesComponent implements OnInit {
   id: number
   location: string 
   seats: number
-  constructor(private http: HttpClient) { 
+  constructor(private http: HttpClient, private cookie: CookieService, private router: Router) { 
     this.tables = []
     this.id = -1
     this.location = ""
@@ -24,13 +28,14 @@ export class TablesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.http.get<Table[]>(this.api + '/tables')
+    this.http.get<Table[]>(this.api + '/tables',{headers: {"authorization": this.cookie.get("token")}})
     .subscribe(Response => {
- 
-      // If response comes hideloader() function is called
-      // to hide that loader
-
       this.tables = Response
+    }, error => {
+      if(error.status === 401){
+        this.router.navigateByUrl('/')
+      }
+      console.log(error)
     });
   }
 
@@ -44,14 +49,24 @@ export class TablesComponent implements OnInit {
   onSubmit(table:Table){
 
     if(table.id != -1){
-      this.http.put(this.api+'/tables/' + table.id,JSON.stringify(table),{headers: {"Content-Type": "application/json"}}).subscribe((result)=> {
+      this.http.put(this.api+'/tables/' + table.id,JSON.stringify(table),{headers: {"Content-Type": "application/json","authorization": this.cookie.get("token") }}).subscribe((result)=> {
         console.log(result);
-      })
+      }, error => {
+        if(error.status === 401){
+          this.router.navigateByUrl('/')
+        }
+        console.log(error)
+      });
     }
     else{
-      this.http.post(this.api+'/tables/create',JSON.stringify(table),{headers: {"Content-Type": "application/json"}}).subscribe((result)=> {
+      this.http.post(this.api+'/tables/create',JSON.stringify(table),{headers: {"Content-Type": "application/json", "authorization": this.cookie.get("token")}}).subscribe((result)=> {
         console.log(result);
-      })
+      }, error => {
+        if(error.status === 401){
+          this.router.navigateByUrl('/')
+        }
+        console.log(error)
+      });
     }
 
     location.reload();
@@ -59,16 +74,21 @@ export class TablesComponent implements OnInit {
 
   onDelete(table:Table){
 
-    this.http.delete(this.api+'/tables/' + table.id).subscribe((result)=> {
+    this.http.delete(this.api+'/tables/' + table.id, {headers: {"authorization": this.cookie.get("token")}}).subscribe((result)=> {
       console.log(result);
-    })
+    }, error => {
+      if(error.status === 401){
+        this.router.navigateByUrl('/')
+      }
+      console.log(error)
+    });
     
 
     location.reload();
   }
   onPrintQRCode(table:Table){
 
-    this.http.get(this.api+'/tables/' + table.id + '/qrcode').subscribe((result)=> {
+    this.http.get(this.api+'/tables/' + table.id + '/qrcode',{headers: {"authorization": this.cookie.get("token")}}).subscribe((result)=> {
       console.log(result);
       let printWindow = window.open('qrcode', 'QRCode', 'location=1,status=1,scrollbars=1,width=800,height=600');
 
@@ -81,12 +101,12 @@ export class TablesComponent implements OnInit {
         printWindow!.print();
         printWindow!.close();
     }, 250);
-
-
-
-
-
-    })
+    }, error => {
+      if(error.status === 401){
+        this.router.navigateByUrl('/')
+      }
+      console.log(error)
+    });
     
 
   }

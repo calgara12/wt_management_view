@@ -9,14 +9,17 @@ module.exports = (req,res,next) => {
         let userName = decodedToken.user;
         let role = decodedToken.role;
 
-        if(role !== "management") {
-            res.send("Not a manager");
-            console.log(role);
-        } else {
-            req.user = userName;
-            req.role = role;
-            next();
-        }
+        req.user = userName;
+        req.role = role;
+        next();
+        // if(role !== "management") {
+        //     res.send("Not a manager");
+        //     console.log(role);
+        // } else {
+        //     req.user = userName;
+        //     req.role = role;
+        //     next();
+        // }
     } catch (error) {
         res.status(401).json({messsage: "Authentication failed"});
         console.log(error);

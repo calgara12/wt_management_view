@@ -10,6 +10,7 @@ import { HttpClientModule } from '@angular/common/http'
 import { FormsModule }   from '@angular/forms';
 import { UsersModule } from './users.module';
 import { UsersComponent } from './users/users.component';
+import {CookieService} from 'ngx-cookie-service'
 
 
 @NgModule({
@@ -29,7 +30,9 @@ import { UsersComponent } from './users/users.component';
     FormsModule,
     UsersModule
   ],
-  providers: [],
+  providers: [
+    CookieService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
