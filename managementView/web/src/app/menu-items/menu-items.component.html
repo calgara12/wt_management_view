@@ -1,0 +1,47 @@
+<table class="uk-table uk-table-striped">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Category IDs</th>
+            <th>Allergens</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let menuItem of menuItems">
+            <td>{{menuItem.id}}</td>
+            <td>{{menuItem.title}}</td>
+            <td>{{menuItem.description}}</td>
+            <td>{{menuItem.price}}</td>
+            <td>{{menuItem.category_ids}}</td>
+            <td>{{menuItem.allergens}}</td>
+            <td>
+                <button uk-icon="icon: pencil" (click)="onEdit(menuItem)"></button>
+                <button uk-icon="icon: trash" (click)="onDelete(menuItem)"></button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<form #menuItemPost="ngForm" (ngSubmit)="onSubmit(menuItemPost.value)">
+    <span class="uk-label">id:</span>
+    <input class="uk-input" type="number" name="menuItemId" [(ngModel)]="menuItemId" readonly>
+
+    <span class="uk-label">Title</span>
+    <input class="uk-input" type="text" name="title" [(ngModel)]="title">
+
+    <span class="uk-label">Description:</span>
+    <input class="uk-input" type="text" name="description" [(ngModel)]="description">
+
+    <span class="uk-label">Price:</span>
+    <input class="uk-input" type="number" name="price" [(ngModel)]="price">
+
+    <span class="uk-label">Category IDs:</span>
+    <input class="uk-input" type="text" name="category_ids" [(ngModel)]="category_ids">
+
+    <span class="uk-label">Allergens:</span>
+    <input class="uk-input" type="text" name="allergens" [(ngModel)]="allergens">
+    <input class="uk-input" type="submit">
+</form>

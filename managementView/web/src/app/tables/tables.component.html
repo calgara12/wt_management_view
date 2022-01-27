@@ -1,0 +1,33 @@
+<table class="uk-table uk-table-striped">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Location</th>
+            <th>Seats</th>
+            <th>QR Code</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let table of tables">
+            <td>{{table.id}}</td>
+            <td>{{table.location}}</td>
+            <td>{{table.seats}}</td>
+            <td><button uk-icon="icon: print" (click)="onPrintQRCode(table)"></button></td>
+            <td>
+                <button uk-icon="icon: pencil" (click)="onEdit(table)"></button>
+                <button uk-icon="icon: trash" (click)="onDelete(table)"></button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<form #tablePost="ngForm" (ngSubmit)="onSubmit(tablePost.value)">
+    <span class="uk-label">id:</span>
+    <input class="uk-input" type="number" name="id" [(ngModel)]="id" readonly>
+    <span class="uk-label">location:</span>
+    <input class="uk-input" name="location" [(ngModel)]="location" placeholder="outside">
+    <span class="uk-label">Number of Seats:</span>
+    <input class="uk-input" type="number" name="seats" [(ngModel)]="seats" placeholder="20">
+    <input class="uk-input" type="reset">
+    <input class="uk-input" type="submit">
+</form>
