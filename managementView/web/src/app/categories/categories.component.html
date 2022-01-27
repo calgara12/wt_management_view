@@ -1,0 +1,38 @@
+<table class="uk-table uk-table-striped">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Type ID</th>
+            <th>Type Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let category of categories">
+            <td>{{category.id}}</td>
+            <td>{{category.name}}</td>
+            <td>{{category.type_id}}</td>
+            <td>{{category.typeName}}</td>
+            <td>
+                <button uk-icon="icon: pencil" (click)="onEdit(category)"></button>
+                <button uk-icon="icon: trash" (click)="onDelete(category)"></button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<form #categoryPost="ngForm" (ngSubmit)="onSubmit(categoryPost.value)">
+    <span class="uk-label">id:</span>
+    <input class="uk-input" type="number" name="id" [(ngModel)]="id" readonly>
+    <span class="uk-label">Type:</span>
+
+    <div class="uk-margin">
+        <select name="typeSelect" class="uk-select" [(ngModel)]="selectedType" required>
+            <option *ngFor="let type of types" [ngValue]="type" [selected]="type.name">{{type.name}}</option>
+        </select>
+    </div>
+
+    <span class="uk-label">Category Name:</span>
+    <input class="uk-input" name="categoryName" [(ngModel)]="categoryName">
+    <input class="uk-input" type="submit">
+</form>

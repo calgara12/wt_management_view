@@ -4,7 +4,7 @@ const pool = require('../pool.js');
 router.get('/', async (req,res) => {            //view all menu items
     let result = [];
     try {
-        result = await pool.query('SELECT * FROM menu_items');
+        result = await pool.query('SELECT * FROM menu_items ORDER BY id ASC');
         res.status(200).json(result.rows);
     } catch(err) {
         res.status(500).send("Error");
@@ -16,7 +16,7 @@ router.get('/:menuItemId', async (req,res) => {     //get menu item by ID
     let result = [];
     try {
         const queryGetMenuItemById = {
-            text: 'SELECT * FROM menu_items WHERE id = $1',
+            text: 'SELECT * FROM menu_items WHERE id = $1 ORDER BY id ASC',
             values: [req.params.menuItemId]
         };
         result = await pool.query(queryGetMenuItemById);
@@ -41,6 +41,14 @@ router.post('/create', async (req,res) => {         //create menu item
     }
     try {
         let newMenuItem = req.body;
+        /*result = await pool.query('SELECT * FROM menu_items');
+        let newMenuItemId = 0;
+        for (let i = 0; i < result.rowCount; i++) {
+            if(newMenuItemId < result.rows[i].id) {
+                newMenuItemId = ++result.rows[i].id;
+            }
+            
+        }*/
 
         if(newMenuItem.id) {
             let checkMenuItemId = await pool.query({
@@ -54,13 +62,14 @@ router.post('/create', async (req,res) => {         //create menu item
             }
         }
         const queryCreateMenuItem = {
-            text:'INSERT INTO menu_items(id, title, description, price, category, allergens) VALUES ($1, $2, $3, $4, $5, $6)',
-            values: [req.body.id, req.body.title, req.body.desc, req.body.price, req.body.categoryId, req.body.allergens]
+            text:'INSERT INTO menu_items(title, description, price, category_ids, allergens) VALUES ($1, $2, $3, $4, $5)',
+            values: [req.body.title, req.body.desc, req.body.price, req.body.categoryId, req.body.allergens]
         };
         result = await pool.query(queryCreateMenuItem);
         res.status(200).json(result.rows);
     } catch (error) {
         res.status(500).send("Error");
+        console.log(error);
     }
 })
 
@@ -85,11 +94,11 @@ router.put('/:menuItemId', async (req,res) => {     //update menu item
       let title = req.body.title != null ? req.body.title : currentMenuItem[0].title;
       let desc = req.body.desc != null ? req.body.desc : currentMenuItem[0].description;
       let price = req.body.price != null ? req.body.price: currentMenuItem[0].price;
-      let categoryId = req.body.categoryId != null ? req.body.categoryId : currentMenuItem[0].category;
+      let categoryId = req.body.categoryId != null ? req.body.categoryId : currentMenuItem[0].category_ids;
       let allergens = req.body.allergens != null ? req.body.allergens : currentMenuItem[0].allergens;
 
       const queryUpdateMenuItem = {
-          text:'UPDATE menu_items SET id = $1, title = $2, description = $3, price = $4, category = $5, allergens = $6 WHERE id = $7',
+          text:'UPDATE menu_items SET id = $1, title = $2, description = $3, price = $4, category_ids = $5, allergens = $6 WHERE id = $7',
           values: [newId, title, desc, price, categoryId, allergens, req.params.menuItemId]
       };
       result = await pool.query(queryUpdateMenuItem);
@@ -102,7 +111,7 @@ router.put('/:menuItemId', async (req,res) => {     //update menu item
 
     } catch (error) {
         res.status(500).send("Error");
-        console.log(error.stack);
+        console.log(error);
     }
 })
 
