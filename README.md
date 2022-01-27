@@ -1,6 +1,6 @@
 # Installation
 1. Clone Repository
-2. Setup the postgres database with the db.sql file
+2. Setup the postgres database with the db.sql file using the command ```psql -U <name> -f db.sql``` the file is located under api/db/db.sql
 3. navigate to the /api directory and run ```npm i```
 4. navigate to the /web directory and run ```npm i```
 5. Add your config.json that contains your db credentials
