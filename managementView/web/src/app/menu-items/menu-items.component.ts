@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { MenuItem } from './menu-item';
 import { Category } from '../categories/category';
 import { HttpClient } from '@angular/common/http';
-
+import {CookieService} from 'ngx-cookie-service'
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-menu-items',
@@ -21,7 +22,7 @@ export class MenuItemsComponent implements OnInit {
   category_ids: number[]
   allergens: string[]
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private cookie: CookieService, private router: Router) { 
     this.menuItems = []
     this.categories = []
     this.menuItemId = -1
@@ -34,15 +35,25 @@ export class MenuItemsComponent implements OnInit {
     
 
   ngOnInit(): void {
-    this.http.get<MenuItem[]>(this.api + '/menuItems')
+    this.http.get<MenuItem[]>(this.api + '/menuItems',{headers: {"authorization": this.cookie.get("token")}})
     .subscribe(Response => {
       this.menuItems = Response;
 
-      this.http.get<Category[]>(this.api + '/categories')
+      this.http.get<Category[]>(this.api + '/categories',{headers: {"authorization": this.cookie.get("token")}})
       .subscribe(Response =>{
         this.categories = Response;
-      })
-    })
+      }, error => {
+        if(error.status === 401){
+          this.router.navigateByUrl('/')
+        }
+        console.log(error)
+      });
+    }, error => {
+      if(error.status === 401){
+        this.router.navigateByUrl('/')
+      }
+      console.log(error)
+    });
   }
 
   onEdit(selectedMenuItem: MenuItem) {
@@ -55,8 +66,13 @@ export class MenuItemsComponent implements OnInit {
   }
 
   onDelete(selectedMenuItem:MenuItem) {
-    this.http.delete(this.api + '/menuItems/' + selectedMenuItem.id).subscribe((result) => {
+    this.http.delete(this.api + '/menuItems/' + selectedMenuItem.id,{headers: {"authorization": this.cookie.get("token")}}).subscribe((result) => {
       console.log(result);
+    }, error => {
+      if(error.status === 401){
+        this.router.navigateByUrl('/')
+      }
+      console.log(error)
     });
     location.reload();
   }
@@ -66,15 +82,25 @@ export class MenuItemsComponent implements OnInit {
       allergens: menuItem.allergens};
 
     if(menuItem.menuItemId != -1) { //=-1 if already exists, update
-      this.http.put(this.api + '/menuItems/' + menuItem.menuItemId, JSON.stringify(dto), {headers: {"Content-Type": "application/json"}})
+      this.http.put(this.api + '/menuItems/' + menuItem.menuItemId, JSON.stringify(dto), {headers: {"Content-Type": "application/json","authorization": this.cookie.get("token")}})
       .subscribe((result) => {
         console.log(result);
-      })
+      }, error => {
+        if(error.status === 401){
+          this.router.navigateByUrl('/')
+        }
+        console.log(error)
+      });
     } else {  //if item does not exist, post
-      this.http.post(this.api + '/menuItems/create', JSON.stringify(dto), {headers: {"Content-Type": "application/json"}})
+      this.http.post(this.api + '/menuItems/create', JSON.stringify(dto), {headers: {"Content-Type": "application/json","authorization": this.cookie.get("token")}})
       .subscribe((result)=> {
         console.log(result);
-      })
+      }, error => {
+        if(error.status === 401){
+          this.router.navigateByUrl('/')
+        }
+        console.log(error)
+      });
     }
     location.reload();
   }

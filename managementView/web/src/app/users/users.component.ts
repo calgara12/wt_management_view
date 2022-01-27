@@ -31,7 +31,7 @@ export class UsersComponent implements OnInit {
     this.role = ""
     this.username = ""
     this.password = ""
-    this.selectedRole = {id:1, name:"management"}
+    this.selectedRole = {id:3, name:"kitchen"}
   }
 
   ngOnInit(): void {
