@@ -98,8 +98,8 @@ router.put('/:menuItemId', async (req,res) => {     //update menu item
       let allergens = req.body.allergens != null ? req.body.allergens : currentMenuItem[0].allergens;
 
       const queryUpdateMenuItem = {
-          text:'UPDATE menu_items SET id = $1, title = $2, description = $3, price = $4, category_ids = $5, allergens = $6 WHERE id = $7',
-          values: [newId, title, desc, price, categoryId, allergens, req.params.menuItemId]
+          text:'UPDATE menu_items SET title = $1, description = $2, price = $3, category_ids = $4, allergens = $5 WHERE id = $6',
+          values: [title, desc, price, categoryId, allergens, req.params.menuItemId]
       };
       result = await pool.query(queryUpdateMenuItem);
       
