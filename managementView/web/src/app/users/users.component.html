@@ -1,0 +1,39 @@
+<table class="uk-table uk-table-striped">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Role</th>
+            <th>Username</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let user of users">
+            <td>{{user.id}}</td>
+            <td>{{user.role}}</td>
+            <td>{{user.username}}</td>
+            <td>
+                <button uk-icon="icon: pencil" (click)="onEdit(user)"></button>
+                <button uk-icon="icon: trash" (click)="onDelete(user)"></button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<form #userPost="ngForm" (ngSubmit)="onSubmit(userPost.value)">
+    <span class="uk-label">id:</span>
+    <input class="uk-input" type="number" name="id" [(ngModel)]="id" readonly>
+    <span class="uk-label">Role:</span>
+
+
+    <div class="uk-margin">
+        <select name="roleSelect" class="uk-select" [(ngModel)]="selectedRole" required>
+            <option *ngFor="let role of roles" [ngValue]="role" [selected]="role.name">{{role.name}}</option>
+        </select>
+    </div>
+
+    <span class="uk-label">Username:</span>
+    <input class="uk-input" name="username" [(ngModel)]="username">
+    <span class="uk-label">Password:</span>
+    <input class="uk-input" type="password" name="password" [(ngModel)]="password">
+    <input class="uk-input" type="submit">
+</form>

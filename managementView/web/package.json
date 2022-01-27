@@ -20,6 +20,7 @@
     "@angular/router": "~13.0.0",
     "body-parser": "^1.19.1",
     "express": "^4.17.2",
+    "ngx-cookie-service": "^13.1.2",
     "pg": "^8.7.1",
     "qrcode": "^1.5.0",
     "rxjs": "~7.4.0",

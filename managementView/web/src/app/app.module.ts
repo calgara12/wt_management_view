@@ -9,28 +9,38 @@ import { LoginModule } from './login.module';
 import { HttpClientModule } from '@angular/common/http';
 import { CategoriesComponent } from './categories/categories.component'
 import { CategoriesModule } from './categories.module';
-import { FormsModule } from '@angular/forms';
 import { MenuItemsComponent } from './menu-items/menu-items.component';
 import { MenuItemsModule } from './menuItems.module';
+import { FormsModule }   from '@angular/forms';
+import { UsersModule } from './users.module';
+import { UsersComponent } from './users/users.component';
+import {CookieService} from 'ngx-cookie-service'
+
 
 @NgModule({
   declarations: [
     AppComponent,
     TablesComponent,
+    UsersComponent,
     LoginComponent,
     CategoriesComponent,
     MenuItemsComponent,
+    UsersComponent,
   ],
   imports: [
     BrowserModule,
     TablesModule,
+    UsersModule,
     LoginModule,
     CategoriesModule,
     MenuItemsModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    UsersModule
   ],
-  providers: [],
+  providers: [
+    CookieService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

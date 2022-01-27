@@ -11,6 +11,7 @@ router.get('/', async (req,res) => {
     catch(err){
         res.status(500).send("This should not have happened!");
     }
+
     res.status(200).json(result.rows);
 })
 
@@ -38,7 +39,7 @@ router.get('/:tableId/qrcode', async (req,res) => {
         }
         result = await pool.query(qGetTable);
 
-        qrcode = await QRCode.toDataURL(`Seats: ${result.rows[0].seats}, Location: ${result.rows[0].location}`)
+        qrcode = await QRCode.toDataURL(`Table Number: ${result.rows[0].id} Seats: ${result.rows[0].seats}, Location: ${result.rows[0].location}`)
     }
     catch(err){
         res.status(500).send("This should not have happened!");
@@ -51,10 +52,9 @@ router.post('/create', async (req,res) => {
     try{
 
         const qCreate = {
-            text: 'INSERT INTO tables(seats, location, qr_code) VALUES($1, $2, $3)',
+            text: 'INSERT INTO tables(seats, location) VALUES($1, $2)',
             values: [req.body.seats,
-                     req.body.location,
-                     req.body.qr_code]
+                     req.body.location]
         }
         result = await pool.query(qCreate);
     }
