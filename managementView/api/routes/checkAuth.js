@@ -11,15 +11,19 @@ module.exports = (req,res,next) => {
 
         req.user = userName;
         req.role = role;
-        next();
-        // if(role !== "management") {
-        //     res.send("Not a manager");
-        //     console.log(role);
-        // } else {
-        //     req.user = userName;
-        //     req.role = role;
-        //     next();
-        // }
+        if(req.baseUrl === '/api/users' && req.method === 'DELETE'){
+            if(role !== "management") {
+                     res.status(401).json("Unauthorized");
+            }
+            else{
+                next()
+            }
+            
+        }
+        else{
+            next();
+        }
+
     } catch (error) {
         res.status(401).json({messsage: "Authentication failed"});
         console.log(error);

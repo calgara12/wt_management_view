@@ -35,5 +35,10 @@
     <input class="uk-input" name="username" [(ngModel)]="username">
     <span class="uk-label">Password:</span>
     <input class="uk-input" type="password" name="password" [(ngModel)]="password">
+    <span class="uk-label">Confirm Password:</span>
+    <input class="uk-input" type="password" name="confirmPassword" [(ngModel)]="confirmPassword">
+    <span class="uk-label-warning" [hidden]="!invalid_credentials">Passwords do not match</span>
+    <span class="uk-label-warning" [hidden]="!not_a_manager">You have to be a manager to delete accounts.</span>
+
     <input class="uk-input" type="submit">
 </form>

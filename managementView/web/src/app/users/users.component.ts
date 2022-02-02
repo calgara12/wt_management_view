@@ -23,6 +23,9 @@ export class UsersComponent implements OnInit {
   role: string
   username: string 
   password: string
+  confirmPassword: string
+  invalid_credentials: boolean
+  not_a_manager: boolean
   constructor(private http: HttpClient, private cookie: CookieService, private router: Router) { 
     this.users = []
     this.roles = []
@@ -31,6 +34,9 @@ export class UsersComponent implements OnInit {
     this.role = ""
     this.username = ""
     this.password = ""
+    this.confirmPassword = ""
+    this.invalid_credentials = false
+    this.not_a_manager = false
     this.selectedRole = {id:3, name:"kitchen"}
   }
 
@@ -79,29 +85,35 @@ export class UsersComponent implements OnInit {
 
   onSubmit(user:any){
 
-    let dto = {role_id: user.roleSelect.id, username: user.username, password: user.password}
-    if(user.id != -1){
-      this.http.put(this.api+'/users/' + user.id,JSON.stringify(dto),{headers: {"Content-Type": "application/json", "authorization": this.cookie.get("token")}}).subscribe((result)=> {
-        console.log(result);
-      }, error => {
-        if(error.status === 401){
-          this.router.navigateByUrl('/')
-        }
-        console.log(error)
-      });
+    if(this.confirmPassword === user.password){
+      let dto = {role_id: user.roleSelect.id, username: user.username, password: user.password}
+      if(user.id != -1){
+        this.http.put(this.api+'/users/' + user.id,JSON.stringify(dto),{headers: {"Content-Type": "application/json", "authorization": this.cookie.get("token")}}).subscribe((result)=> {
+          console.log(result);
+        }, error => {
+          if(error.status === 401){
+            this.router.navigateByUrl('/')
+          }
+          console.log(error)
+        });
+      }
+      else{
+        this.http.post(this.api+'/users/create',JSON.stringify(dto),{headers: {"Content-Type": "application/json", "authorization": this.cookie.get("token")}}).subscribe((result)=> {
+          console.log(result);
+        }, error => {
+          if(error.status === 401){
+            this.router.navigateByUrl('/')
+          }
+          console.log(error)
+        });
+      }
+  
+      location.reload();
     }
     else{
-      this.http.post(this.api+'/users/create',JSON.stringify(dto),{headers: {"Content-Type": "application/json", "authorization": this.cookie.get("token")}}).subscribe((result)=> {
-        console.log(result);
-      }, error => {
-        if(error.status === 401){
-          this.router.navigateByUrl('/')
-        }
-        console.log(error)
-      });
+      this.invalid_credentials = true;
     }
-
-    location.reload();
+    
   }
 
   onDelete(user:User){
@@ -112,7 +124,7 @@ export class UsersComponent implements OnInit {
 
     }, error => {
       if(error.status === 401){
-        this.router.navigateByUrl('/')
+        this.not_a_manager = true
       }
       console.log(error)
     });
