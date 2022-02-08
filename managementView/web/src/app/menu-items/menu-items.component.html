@@ -38,10 +38,29 @@
     <span class="uk-label">Price:</span>
     <input class="uk-input" type="number" name="price" [(ngModel)]="price">
 
-    <span class="uk-label">Category IDs:</span>
-    <input class="uk-input" type="text" name="category_ids" [(ngModel)]="category_ids">
-
+    
+    <span class="uk-label">Select Categories</span>
+    <ng-multiselect-dropdown
+        name="category_ids"
+        [placeholder]="'Select Categories'"
+        [settings]="dropdownSettings"
+        [data]="categoriesDropDownList"
+        [(ngModel)]="selectedCategories"
+        (onSelect)="onItemSelect($event)"
+        (onSelectAll)="onSelectAll($event)"
+    >
+    </ng-multiselect-dropdown>
+   
     <span class="uk-label">Allergens:</span>
-    <input class="uk-input" type="text" name="allergens" [(ngModel)]="allergens">
+    <ng-multiselect-dropdown
+        name="allergens"
+        [placeholder]="'Select Allergens'"
+        [settings]="dropdownSettings"
+        [data]="allergensDropDownList"
+        [(ngModel)]="selectedAllergens"
+        (onSelect)="onItemSelect($event)"
+        (onSelectAll)="onSelectAll($event)"
+    >
+    </ng-multiselect-dropdown>
     <input class="uk-input" type="submit">
 </form>

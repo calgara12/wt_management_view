@@ -1,4 +1,5 @@
 const express = require('express'), router = express.Router()
+const { async } = require('rxjs');
 const pool = require('../pool.js');
 
 router.get('/', async (req,res) => {                //view all categories

@@ -15,6 +15,7 @@ import { FormsModule }   from '@angular/forms';
 import { UsersModule } from './users.module';
 import { UsersComponent } from './users/users.component';
 import {CookieService} from 'ngx-cookie-service'
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import {CookieService} from 'ngx-cookie-service'
     MenuItemsModule,
     HttpClientModule,
     FormsModule,
-    UsersModule
+    UsersModule,
+    NgMultiSelectDropDownModule.forRoot()
   ],
   providers: [
     CookieService
