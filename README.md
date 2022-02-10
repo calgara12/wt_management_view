@@ -52,6 +52,7 @@ On the table page we implemented a QR Code print function for each row. By click
 ![users](https://user-images.githubusercontent.com/86632022/153434235-f06ab40d-1ce7-4b88-8782-24ee4b90467e.png)
 
 On the users page we implemented a select-dropdown menu for the roles of the users, as it would be unnecessarily tedious to enter the roles manually when there are only three roles anyways. As you can see in the screenshot, the passwords of the users do not show on the table, because we viewed it as problematic for each user to see the password of all the other users.
+Furthermore to edit a user, you also have to know his password, and enter it in the "confirm password" textbox. Deleting a User can only be done if you have the "management" role.
 
 ## Menu-Items
 
