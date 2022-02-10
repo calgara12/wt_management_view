@@ -68,10 +68,9 @@ router.put('/:tableId', async (req,res) => {
     let result = [];
     try{
         const qUpdate = {
-            text: 'UPDATE tables SET seats = $1, location = $2, qr_code = $3 WHERE id=$4',
+            text: 'UPDATE tables SET seats = $1, location = $2 WHERE id=$3',
             values: [req.body.seats,
                      req.body.location,
-                     req.body.qr_code,
                      req.params.tableId]
         }
         result = await pool.query(qUpdate);
